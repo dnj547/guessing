@@ -2,17 +2,25 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 
 function App() {
-  const API = "https://cors-anywhere.herokuapp.com/app.linkedin-reach.io/words";
-  const [words, setWords] = useState();
+  const PROXY = "https://cors-anywhere.herokuapp.com/";
+  const API = "app.linkedin-reach.io/words";
+  const PARAMETERS = "?minLength=3&maxLength=10"
+  const [words, setWords] = useState([]);
+  const [word, setWord] = useState('');
+  const [guessesLeft, setGuessesLeft] = useState(6);
   useEffect(() => {
-    fetch(API)
-      .then(res=>res.text())
-      .then(words=>setWords(words))
-  });
-  console.log(words)
+    fetch(PROXY+API+PARAMETERS)
+      .then(res => res.text())
+      .then(words => setWords(words.split(`\n`)))
+  }, [])
+  useEffect(() => {
+    if (words.length > 0) {
+      setWord(words[Math.floor(Math.random()*words.length)])
+    }
+  }, [words])
   return (
     <div className="App">
-      Guessing
+      Guesses Remaining: {guessesLeft}
     </div>
   );
 }
