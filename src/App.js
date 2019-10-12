@@ -64,9 +64,12 @@ function App() {
   return (
     <div className="App">
       <div className="playing">
-        Guesses Remaining: {guessesLeft}
+        <h1>Guessing</h1>
+        <b>{guessesLeft}</b> incorrect guesses left
+        <br/>
         <br/>
         Word: {blanks}
+        <br/>
         <br/>
         <form onSubmit={handleSubmit}>
           <label>
@@ -75,6 +78,9 @@ function App() {
           </label>
           <input type="submit" value="Submit" />
         </form>
+        <br/>
+        <br/>
+        Incorrect Guesses: {guessedIncorrect.join(", ")}
       </div>
       {gameState === 'lost' ? (
         <div className="lost">
