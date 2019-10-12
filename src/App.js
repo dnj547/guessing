@@ -9,9 +9,9 @@ function App() {
   const [words, setWords] = useState([]);
   const [word, setWord] = useState('');
   const [guessesLeft, setGuessesLeft] = useState(6);
-  const [guessedCorrect, setGuessedCorrect] = useState([]);
-  const [guessedIncorrect, setGuessedIncorrect] = useState([]);
-  const [currentGuess, setCurrentGuess] = useState('');
+  const [correct, setCorrect] = useState([]);
+  const [incorrect, setIncorrect] = useState([]);
+  const [guess, setGuess] = useState('');
   const [gameState, setGameState] = useState('playing')
   useEffect(() => {
     fetch(PROXY+API+PARAMETERS)
@@ -24,27 +24,34 @@ function App() {
     }
   }, [words]);
   const blanks = word ? word.split("").map((letter, i) => {
-    return <Blank letter={letter} key={i} guessed={guessedCorrect.includes(letter) ? true : false} />
+    return <Blank letter={letter} key={i} guessed={correct.includes(letter) ? true : false} />
   }) : null;
   const handleChange = e => {
-    setCurrentGuess(e.target.value)
+    setGuess(e.target.value)
+  }
+  const validGuess = guess => {
+    if (guess === "" || !guess.match(/[a-z]/i) || guess.split("").length !== 1) {
+      console.log("You must enter a letter")
+      return false
+    } else if (incorrect.includes(guess) || correct.includes(guess)) {
+      console.log("You have already guessed that letter")
+      return false
+    } else {
+      return true
+    }
   }
   const handleSubmit = e => {
     e.preventDefault();
-    if (currentGuess === "" || !currentGuess.match(/[a-z]/i)) {
-      console.log("You must enter a letter")
-    } else if (guessedIncorrect.includes(currentGuess) || guessedCorrect.includes(currentGuess)) {
-      console.log("You have already guessed that letter")
-    } else {
-      if (word.split("").includes(currentGuess)) {
-        console.log("correct", currentGuess, word);
-        setGuessedCorrect([...guessedCorrect, currentGuess]);
-        if (word.split("").every(letter=>[...guessedCorrect, currentGuess].includes(letter))) {
+    if (validGuess(guess)) {
+      if (word.split("").includes(guess)) {
+        console.log("correct", guess, word);
+        setCorrect([...correct, guess]);
+        if (word.split("").every(letter=>[...correct, guess].includes(letter))) {
           setGameState('won')
         }
       } else {
-        console.log("incorrect", currentGuess, word);
-        setGuessedIncorrect([...guessedIncorrect, currentGuess]);
+        console.log("incorrect", guess, word);
+        setIncorrect([...incorrect, guess]);
         if (guessesLeft > 0) {
           setGuessesLeft(guessesLeft-1);
         } else {
@@ -52,13 +59,13 @@ function App() {
         }
       }
     }
-    setCurrentGuess('');
+    setGuess('');
   }
   const reset = () => {
     setWord(words[Math.floor(Math.random()*words.length)]);
     setGuessesLeft(6);
-    setGuessedCorrect([]);
-    setGuessedIncorrect([]);
+    setCorrect([]);
+    setIncorrect([]);
     setGameState('playing');
   }
   return (
@@ -73,14 +80,20 @@ function App() {
         <br/>
         <form onSubmit={handleSubmit}>
           <label>
-            Guess:
-            <input type="text" value={currentGuess} name="guess" onChange={handleChange}/>
+            <input
+              type="text"
+              value={guess}
+              name="guess"
+              onChange={handleChange}
+              style={{ width: "10px" }}/>
           </label>
-          <input type="submit" value="Submit" />
+          <input type="submit" value="Guess" />
         </form>
         <br/>
         <br/>
-        Incorrect Guesses: {guessedIncorrect.join(", ")}
+        {incorrect.length > 0 ? (
+          <div>Incorrect Guesses: {incorrect.join(", ")}</div>
+        ) : null}
       </div>
       {gameState === 'lost' ? (
         <div className="lost">

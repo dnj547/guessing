@@ -1,10 +1,16 @@
 import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faGhost } from '@fortawesome/free-solid-svg-icons'
 
 function Blank (props) {
   if (props.guessed) {
     return `${props.letter} `
   } else {
-    return "_ "
+    return (
+      <div className="icon">
+      <FontAwesomeIcon icon={faGhost} size="lg" />
+      </div>
+    )
   }
 }
 export default Blank;
