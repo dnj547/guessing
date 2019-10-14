@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import Blank from './Components/Blank';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import Jumbotron from 'react-bootstrap/Jumbotron';
 import './App.css';
 
 function App() {
@@ -72,7 +70,7 @@ function App() {
   }
   return (
     <div className="App">
-      <Jumbotron>
+      <div>
         <h1>Ghoul Be Gone</h1>
         <b>{guessesLeft}</b>
         <br/>
@@ -87,7 +85,7 @@ function App() {
               value={guess}
               name="guess"
               onChange={handleChange}
-              style={{ width: "10px" }}/>
+              style={{ width: "20px" }}/>
           </label>
           <input type="submit" value="Guess" />
         </form>
@@ -96,7 +94,7 @@ function App() {
         {incorrect.length > 0 ? (
           <div>Incorrect Guesses: {incorrect.join(", ")}</div>
         ) : null}
-      </Jumbotron>
+      </div>
       {gameState === 'lost' ? (
         <div className="lost">
           <h2>You lost!</h2>
