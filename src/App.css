@@ -40,3 +40,11 @@ input[type=submit], button {
   font-size: 6em;
   font-family: 'Wire One', sans-serif;
 }
+.x {
+  padding: 10px;
+  display: inline;
+  color: gainsboro;
+  font-size: 10em;
+  font-family: 'Wire One', sans-serif;
+  font-weight: bold;
+}

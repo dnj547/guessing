@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Blank from './Components/Blank';
+import X from './Components/X';
 import './App.css';
 
 function App() {
@@ -24,8 +25,11 @@ function App() {
     }
   }, [words]);
   const blanks = word ? word.split("").map((letter, i) => {
-    return <Blank letter={letter} key={i} guessed={correct.includes(letter) ? true : false} />
+    return <Blank letter={letter} key={'blank' + i} guessed={correct.includes(letter) ? true : false} />
   }) : null;
+  const exes = Array.from(Array(6).keys()).map((guess, i) => {
+    return <X incorrect={incorrect[i]} key={'x' + i}/>
+  })
   const handleChange = e => {
     setGuess(e.target.value)
   }
@@ -41,6 +45,7 @@ function App() {
     }
   }
   const handleSubmit = e => {
+    console.log(incorrect, guessesLeft)
     e.preventDefault();
     if (validGuess(guess)) {
       if (word.split("").includes(guess)) {
@@ -87,12 +92,9 @@ function App() {
           <button>hint</button>
           <button>end it</button>
         </div>
-        {guessesLeft}
+        {exes}
         <br/>
         <br/>
-        {incorrect.length > 0 ? (
-          <div>Incorrect Guesses: {incorrect.join(", ")}</div>
-        ) : null}
       </div>
       {gameState === 'lost' ? (
         <div className="lost">
