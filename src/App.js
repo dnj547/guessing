@@ -72,23 +72,22 @@ function App() {
     <div className="App">
       <div>
         <h1>Ghoul Be Gone</h1>
-        <b>{guessesLeft}</b>
-        <br/>
-        <br/>
-        Word: {blanks}
-        <br/>
-        <br/>
-        <form onSubmit={handleSubmit}>
-          <label>
-            <input
-              type="text"
-              value={guess}
-              name="guess"
-              onChange={handleChange}
-              style={{ width: "20px" }}/>
-          </label>
-          <input type="submit" value="Guess" />
-        </form>
+        {blanks}
+        <div className="buttons">
+          <form onSubmit={handleSubmit}>
+            <label>
+              <input
+                type="text"
+                value={guess}
+                name="guess"
+                onChange={handleChange}/>
+            </label>
+            <input type="submit" value="guess" />
+          </form>
+          <button>hint</button>
+          <button>end it</button>
+        </div>
+        {guessesLeft}
         <br/>
         <br/>
         {incorrect.length > 0 ? (

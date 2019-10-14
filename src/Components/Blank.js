@@ -8,7 +8,7 @@ function Blank (props) {
   } else {
     return (
       <div className="icon">
-      <FontAwesomeIcon icon={faGhost} size="lg" />
+        <FontAwesomeIcon icon={faGhost} />
       </div>
     )
   }

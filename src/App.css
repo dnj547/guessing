@@ -1,7 +1,41 @@
 .App {
-  text-align: center;
+  text-align: left;
+  width: 95%;
+  margin: auto;
+}
+body {
+    background-color: darkslateblue;
+}
+h1 {
+  color: gainsboro;
+  font-family: 'Wire One', sans-serif;
+  font-size: 9em;
+  margin: 10px;
+}
+.buttons {
+  display: flex;
+  align-items: center;
+  margin-top: 25px;
+}
+input, button {
+  -webkit-appearance: none;
+  appearance: none;
+  font-size: 4em;
+  font-family: 'Wire One', sans-serif;
+  border: none;
+  margin: 10px;
+  border-radius: 5px;
+  height: 80px;
+}
+input[type=text] {
+  width: 50px;
+}
+input[type=submit], button {
+  background-color: gainsboro;
 }
 .icon {
   padding: 10px;
   display: inline;
+  color: gainsboro;
+  font-size: 6em;
 }
