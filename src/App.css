@@ -48,3 +48,10 @@ input[type=submit], button {
   font-family: 'Wire One', sans-serif;
   font-weight: bold;
 }
+.incorrect {
+  padding: 10px;
+  display: inline;
+  color: gainsboro;
+  font-size: 10em;
+  font-family: 'Wire One', sans-serif;
+}

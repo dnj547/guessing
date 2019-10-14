@@ -1,10 +1,18 @@
 import React from 'react';
 
 function X (props) {
-  return (
-    <div className="x">
-      {props.incorrect ? props.incorrect : "x"}
-    </div>
-  )
+  if (props.incorrect) {
+    return (
+      <div className="incorrect">
+        {props.incorrect}
+      </div>
+    )
+  } else {
+    return (
+      <div className="x">
+        x
+      </div>
+    )
+  }
 }
 export default X;
