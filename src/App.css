@@ -33,9 +33,10 @@ input[type=text] {
 input[type=submit], button {
   background-color: gainsboro;
 }
-.icon {
+.icon, .letter {
   padding: 10px;
   display: inline;
   color: gainsboro;
   font-size: 6em;
+  font-family: 'Wire One', sans-serif;
 }

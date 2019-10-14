@@ -4,7 +4,11 @@ import { faGhost } from '@fortawesome/free-solid-svg-icons'
 
 function Blank (props) {
   if (props.guessed) {
-    return `${props.letter} `
+    return (
+      <div className="letter">
+        {props.letter}
+      </div>
+    )
   } else {
     return (
       <div className="icon">
