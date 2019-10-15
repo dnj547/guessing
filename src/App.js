@@ -11,13 +11,13 @@ function App() {
   const [guess, setGuess] = useState('');
   const [guessesLeft, setGuessesLeft] = useState(6);
   const [gameState, setGameState] = useState('intro');
+  const [difficulty, setDifficulty] = useState(1)
 
   const [words, setWords] = useState([]);
   const [word, setWord] = useState('');
 
   const PROXY = "https://cors-anywhere.herokuapp.com/";
   const API = "app.linkedin-reach.io/words";
-  const PARAMETERS = "?minLength=3&maxLength=10";
 
   const reset = () => {
     setWord(words[Math.floor(Math.random()*words.length)]);
@@ -28,10 +28,10 @@ function App() {
   }
 
   useEffect(() => {
-    fetch(PROXY+API+PARAMETERS)
+    fetch(PROXY+API+`?difficulty=${difficulty}&minLength=3&maxLength=10`)
       .then(res => res.text())
       .then(words => setWords(words.split(`\n`)))
-  }, [words]);
+  }, [words, difficulty]);
 
   useEffect(() => {
     if (words.length > 0) {
@@ -40,7 +40,14 @@ function App() {
   }, [words]);
 
   const handleClick = e => {
-    console.log(e.target.value)
+    if (e.target.value === 'easy') {
+      setDifficulty(1)
+    } else if (e.target.value === 'medium') {
+      setDifficulty(4)
+    } else {
+      setDifficulty(10)
+    };
+    console.log(difficulty)
   }
 
   return (
