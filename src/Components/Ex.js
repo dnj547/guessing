@@ -1,6 +1,6 @@
 import React from 'react';
 
-function X (props) {
+function Ex (props) {
   if (props.incorrect) {
     return (
       <div className="incorrect">
@@ -15,4 +15,4 @@ function X (props) {
     )
   }
 }
-export default X;
+export default Ex;
