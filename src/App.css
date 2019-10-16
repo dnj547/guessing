@@ -61,3 +61,6 @@ input[type=submit], button {
   font-size: 3em;
   font-family: 'Wire One', sans-serif;
 }
+.no-hint {
+  background-color: gray;
+}

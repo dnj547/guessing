@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Blank from './Blank';
 import Ex from './Ex';
 import Alert from './Alert';
@@ -7,12 +7,19 @@ function Game (props) {
   const [guess, setGuess] = useState('');
   const [correct, setCorrect] = useState([]);
   const [incorrect, setIncorrect] = useState([]);
+  const [given, setGiven] = useState([]);
   const [guessesLeft, setGuessesLeft] = useState(6);
+  const [hintsLeft, setHintsLeft] = useState(3);
   const [alert, setAlert] = useState('');
-  const [gameOver, setGameOver] = useState(false);
+  const [playingGame, setPlayingGame] = useState(true);
+  const [won, setWon] = useState(false);
+  const [lost, setLost] = useState(false);
 
   const blanks = props.word ? props.word.split("").map((letter, i) => {
-    return <Blank letter={letter} key={'blank' + i} guessed={correct.includes(letter) ? true : false} />
+    return <Blank
+      letter={letter}
+      key={'blank' + i}
+      guessed={correct.includes(letter) || given.includes(letter) ? true : false} />
   }) : null;
 
   const exes = Array.from(Array(6).keys()).map((guess, i) => {
@@ -20,7 +27,7 @@ function Game (props) {
   });
 
   const handleChangeGuess = e => {
-    setGuess(e.target.value)
+    setGuess(e.target.value);
   };
 
   const validGuess = guess => {
@@ -32,49 +39,84 @@ function Game (props) {
       return false;
     } else {
       setAlert('');
-      console.log("valid guess");
       return true;
     }
   };
 
+  const winOrLose = (newIncorrect, newCorrect) => {
+    if (newIncorrect && newIncorrect.length > 5) {
+      setPlayingGame(false);
+      setLost(true);
+      setGiven(props.word.split(""));
+      setAlert("You lost!");
+    } else if (newCorrect && props.word.split("").every(letter=>newCorrect.includes(letter))) {
+      setPlayingGame(false);
+      setWon(true);
+      setAlert("You won!");
+    }
+  }
+
   const handleSubmitGuess = e => {
     e.preventDefault();
+    let newCorrect;
+    let newIncorrect;
+    let newGuessesLeft;
     if (validGuess(guess)) {
       if (props.word.split("").includes(guess)) {
-        setCorrect([...correct, guess]);
-        if (props.word.split("").every(letter=>[...correct, guess].includes(letter))) {
-          setGameOver(true);
-          setAlert("You won!");
-        }
+        newCorrect = [...correct, guess]
+        setCorrect(newCorrect);
       } else {
-        setIncorrect([...incorrect, guess]);
-        let newGuessesLeft = guessesLeft-1
+        newIncorrect = [...incorrect, guess]
+        setIncorrect(newIncorrect);
+        newGuessesLeft = guessesLeft-1
         setGuessesLeft(newGuessesLeft);
-        if (newGuessesLeft === 0) {
-          setGameOver(true);
-          setAlert("You lost!");
-        }
       }
     }
     setGuess('');
+    winOrLose(newIncorrect, newCorrect);
   };
+
+  const hint = () => {
+    if (hintsLeft > 0) {
+      let letters = props.word.split("")
+      let randomLetter;
+      if (correct.length > 0) {
+        let lettersNotGuessed = letters.filter(letter => !correct.includes(letter));
+        randomLetter = lettersNotGuessed[Math.floor(Math.random()*lettersNotGuessed.length)];
+      } else {
+        randomLetter = letters[Math.floor(Math.random()*letters.length)]
+      }
+      setGiven([...given, randomLetter]);
+      setHintsLeft(hintsLeft-1);
+    } else {
+      setAlert("No hints left");
+    };
+  }
+
+  const giveUp = () => {
+    setAlert("You gave up!");
+    setGiven(props.word.split(""));
+    setPlayingGame(false);
+    setLost(true);
+  }
 
   const resetGame = () => {
     setGuessesLeft(6);
     setCorrect([]);
     setIncorrect([]);
-    setGameOver(false);
+    setGiven([]);
+    setPlayingGame(true);
+    setWon(false);
+    setLost(false);
     props.resetApp();
-  }
-
-  console.log(guessesLeft)
+  };
 
   return (
     <div>
       <Alert alert={alert}/>
       {blanks}
-      {gameOver ? <button onClick={resetGame}>Play Again</button> : null}
-      {!gameOver ? (
+      {won || lost ? <button onClick={resetGame}>Play Again</button> : null}
+      {playingGame ? (
         <div>
           <div className="buttons">
             <form onSubmit={handleSubmitGuess}>
@@ -87,8 +129,12 @@ function Game (props) {
               </label>
               <input type="submit" value="guess" />
             </form>
-            <button>hint</button>
-            <button>end it</button>
+            {hintsLeft > 0 ? (
+              <button onClick={hint}>hint</button>
+            ) : (
+              <button onClick={hint} className="no-hint">hint</button>
+            )}
+            <button onClick={giveUp}>give up</button>
           </div>
           {exes}
         </div>
