@@ -27,20 +27,7 @@ function Game (props) {
   });
 
   const handleChangeGuess = e => {
-    setGuess(e.target.value);
-  };
-
-  const validGuess = guess => {
-    if (guess === "" || !guess.match(/[a-z]/i) || guess.split("").length !== 1) {
-      setAlert("Enter a letter");
-      return false;
-    } else if (incorrect.includes(guess) || correct.includes(guess)) {
-      setAlert("You have already guessed that letter");
-      return false;
-    } else {
-      setAlert('');
-      return true;
-    }
+    setGuess(e.target.value.toLowerCase());
   };
 
   const winOrLose = (newIncorrect, newCorrect) => {
@@ -55,6 +42,19 @@ function Game (props) {
       setAlert("You won!");
     }
   }
+
+  const validGuess = guess => {
+    if (guess === "" || !guess.match(/[a-z]/i) || guess.split("").length !== 1) {
+      setAlert("Enter a letter");
+      return false;
+    } else if (incorrect.includes(guess) || correct.includes(guess)) {
+      setAlert("You have already guessed that letter");
+      return false;
+    } else {
+      setAlert('');
+      return true;
+    }
+  };
 
   const handleSubmitGuess = e => {
     e.preventDefault();
