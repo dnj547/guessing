@@ -11,7 +11,7 @@ function App() {
   const [guess, setGuess] = useState('');
   const [guessesLeft, setGuessesLeft] = useState(6);
   const [gameState, setGameState] = useState('intro');
-  const [difficulty, setDifficulty] = useState(1)
+
 
   const [words, setWords] = useState([]);
   const [word, setWord] = useState('');
@@ -20,6 +20,8 @@ function App() {
   const API = "app.linkedin-reach.io/words";
 
   const reset = () => {
+    setDifficulty('none');
+    setDifficultyNum(0);
     setWord(words[Math.floor(Math.random()*words.length)]);
     setGuessesLeft(6);
     setCorrect([]);
@@ -27,11 +29,11 @@ function App() {
     setGameState('intro');
   }
 
-  useEffect(() => {
-    fetch(PROXY+API+`?difficulty=${difficulty}&minLength=3&maxLength=10`)
-      .then(res => res.text())
-      .then(words => setWords(words.split(`\n`)))
-  }, [words, difficulty]);
+  // useEffect(() => {
+  //   fetch(PROXY+API+`?difficulty=${difficulty}&minLength=3&maxLength=10`)
+  //     .then(res => res.text())
+  //     .then(words => setWords(words.split(`\n`)))
+  // }, [words, difficulty]);
 
   useEffect(() => {
     if (words.length > 0) {
@@ -39,15 +41,42 @@ function App() {
     }
   }, [words]);
 
-  const handleClick = e => {
-    if (e.target.value === 'easy') {
-      setDifficulty(1)
-    } else if (e.target.value === 'medium') {
-      setDifficulty(4)
-    } else {
-      setDifficulty(10)
+  const newGame = (newDifficultyNum) => {
+    console.log("starting new game", newDifficultyNum);
+    console.log(PROXY+API+`?difficulty=${newDifficultyNum}&minLength=3&maxLength=10`)
+    fetch(PROXY+API+`?difficulty=${newDifficultyNum}&minLength=3&maxLength=10`)
+      .then(res => res.text())
+      .then(words => setWords(words.split(`\n`)))
+      .then(nothing => {
+        setGameState('game');
+      });
+  }
+
+  function useAsyncState(initialValue) {
+    const [value, setValue] = useState(initialValue);
+    const setter = x =>
+      new Promise(resolve => {
+        setValue(x);
+        resolve(x);
+      });
+    return [value, setter];
+  }
+
+  const [difficulty, setDifficulty] = useAsyncState('none');
+  const [difficultyNum, setDifficultyNum] = useAsyncState(0);
+
+  async function handleClick (e) {
+    const newDifficulty = await setDifficulty(e.target.value);
+    let newDifficultyNum;
+    if (newDifficulty === 'easy') {
+      newDifficultyNum = [1, 2, 3][Math.floor(Math.random()*[1, 2, 3].length)]
+    } else if (newDifficulty === 'medium') {
+      newDifficultyNum = [4, 5, 6, 7][Math.floor(Math.random()*[4, 5, 6, 7].length)]
+    } else if (newDifficulty === 'hard') {
+      newDifficultyNum = [8, 9, 10][Math.floor(Math.random()*[8, 9, 10].length)]
     };
-    console.log(difficulty)
+    await setDifficultyNum(newDifficultyNum);
+    newGame(newDifficultyNum);
   }
 
   return (

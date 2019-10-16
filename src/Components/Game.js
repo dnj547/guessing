@@ -3,7 +3,6 @@ import Blank from './Blank';
 import Ex from './Ex';
 
 function Game (props) {
-
   const blanks = props.word ? props.word.split("").map((letter, i) => {
     return <Blank letter={letter} key={'blank' + i} guessed={props.correct.includes(letter) ? true : false} />
   }) : null;
@@ -49,7 +48,6 @@ function Game (props) {
     }
     props.setGuess('');
   };
-
   return (
     <div>
       {blanks}
