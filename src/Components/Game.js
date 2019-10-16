@@ -36,7 +36,7 @@ function Game (props) {
       setLost(true);
       setGiven(props.word.split(""));
       setAlert("You lost!");
-    } else if (newCorrect && props.word.split("").every(letter=>newCorrect.includes(letter))) {
+    } else if (newCorrect && props.word.split("").every(letter=>[...newCorrect, ...given].includes(letter))) {
       setPlayingGame(false);
       setWon(true);
       setAlert("You won!");
@@ -78,13 +78,20 @@ function Game (props) {
 
   const hint = () => {
     if (hintsLeft > 0) {
-      let letters = props.word.split("")
+      let letters = props.word.split("");
+      let filteredLetters;
       let randomLetter;
       if (correct.length > 0) {
-        let lettersNotGuessed = letters.filter(letter => !correct.includes(letter));
-        randomLetter = lettersNotGuessed[Math.floor(Math.random()*lettersNotGuessed.length)];
+        if (given.length > 0) {
+          filteredLetters = letters.filter(letter => !correct.includes(letter) && !given.includes(letter));
+        } else {
+          filteredLetters = letters.filter(letter => !correct.includes(letter));
+        }
+        randomLetter = filteredLetters[Math.floor(Math.random()*filteredLetters.length)];
+      } else if (given.length > 0) {
+        filteredLetters = letters.filter(letter => !given.includes(letter));
       } else {
-        randomLetter = letters[Math.floor(Math.random()*letters.length)]
+        randomLetter = letters[Math.floor(Math.random()*letters.length)];
       }
       setGiven([...given, randomLetter]);
       setHintsLeft(hintsLeft-1);

@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Game from './Components/Game';
 import Intro from './Components/Intro';
-// import Lost from './Components/Lost';
-// import Won from './Components/Won';
 import './App.css';
 
 function App() {
@@ -26,7 +24,6 @@ function App() {
   const [difficultyNum, setDifficultyNum] = useAsyncState(0);
 
   // normal react hooks
-
   const [introScreen, setIntroScreen] = useState(true);
   const [gameScreen, setGameScreen] = useState(false);
   const [words, setWords] = useState([]);
