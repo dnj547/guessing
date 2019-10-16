@@ -41,9 +41,9 @@ function App() {
     const newDifficulty = await setDifficulty(e.target.value);
     let newDifficultyNum;
     if (newDifficulty === 'easy') {
-      newDifficultyNum = [1, 2, 3][Math.floor(Math.random()*[1, 2, 3].length)]
+      newDifficultyNum = [1, 2][Math.floor(Math.random()*[1, 2].length)]
     } else if (newDifficulty === 'medium') {
-      newDifficultyNum = [4, 5, 6, 7][Math.floor(Math.random()*[4, 5, 6, 7].length)]
+      newDifficultyNum = [3, 4, 5, 6, 7][Math.floor(Math.random()*[3, 4, 5, 6, 7].length)]
     } else if (newDifficulty === 'hard') {
       newDifficultyNum = [8, 9, 10][Math.floor(Math.random()*[8, 9, 10].length)]
     };
@@ -60,13 +60,11 @@ function App() {
   }
 
   const newGame = (newDifficultyNum) => {
+    setIntroScreen(false);
+    setGameScreen(true);
     fetch(PROXY+API+`?difficulty=${newDifficultyNum}&minLength=3&maxLength=10`)
       .then(res => res.text())
       .then(words => setWords(words.split(`\n`)))
-      .then(nothing => {
-        setIntroScreen(false);
-        setGameScreen(true);
-      });
   }
 
   return (

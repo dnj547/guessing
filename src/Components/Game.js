@@ -30,13 +30,13 @@ function Game (props) {
     setGuess(e.target.value.toLowerCase());
   };
 
-  const winOrLose = (newIncorrect, newCorrect) => {
-    if (newIncorrect && newIncorrect.length > 5) {
+  const winOrLose = (incorrect, correct) => {
+    if (incorrect && incorrect.length > 5) {
       setPlayingGame(false);
       setLost(true);
       setGiven(props.word);
       setAlert("You lost!");
-    } else if (newCorrect && props.word.every(letter=>[...newCorrect, ...given].includes(letter))) {
+    } else if (correct && props.word.every(letter=>[...correct, ...given].includes(letter))) {
       setPlayingGame(false);
       setWon(true);
       setAlert("You won!");
@@ -49,6 +49,9 @@ function Game (props) {
       return false;
     } else if (incorrect.includes(guess) || correct.includes(guess)) {
       setAlert("You have already guessed that letter");
+      return false;
+    } else if (given.includes(guess)) {
+      setAlert("I gave you that one...");
       return false;
     } else {
       setAlert('');
@@ -96,6 +99,7 @@ function Game (props) {
     } else {
       setAlert("No hints left");
     };
+    winOrLose(incorrect, correct);
   }
 
   const giveUp = () => {
