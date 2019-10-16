@@ -6,52 +6,7 @@ import Won from './Components/Won';
 import './App.css';
 
 function App() {
-  const [correct, setCorrect] = useState([]);
-  const [incorrect, setIncorrect] = useState([]);
-  const [guess, setGuess] = useState('');
-  const [guessesLeft, setGuessesLeft] = useState(6);
-  const [gameState, setGameState] = useState('intro');
-
-
-  const [words, setWords] = useState([]);
-  const [word, setWord] = useState('');
-
-  const PROXY = "https://cors-anywhere.herokuapp.com/";
-  const API = "app.linkedin-reach.io/words";
-
-  const reset = () => {
-    setDifficulty('none');
-    setDifficultyNum(0);
-    setWord(words[Math.floor(Math.random()*words.length)]);
-    setGuessesLeft(6);
-    setCorrect([]);
-    setIncorrect([]);
-    setGameState('intro');
-  }
-
-  // useEffect(() => {
-  //   fetch(PROXY+API+`?difficulty=${difficulty}&minLength=3&maxLength=10`)
-  //     .then(res => res.text())
-  //     .then(words => setWords(words.split(`\n`)))
-  // }, [words, difficulty]);
-
-  useEffect(() => {
-    if (words.length > 0) {
-      setWord(words[Math.floor(Math.random()*words.length)]);
-    }
-  }, [words]);
-
-  const newGame = (newDifficultyNum) => {
-    console.log("starting new game", newDifficultyNum);
-    console.log(PROXY+API+`?difficulty=${newDifficultyNum}&minLength=3&maxLength=10`)
-    fetch(PROXY+API+`?difficulty=${newDifficultyNum}&minLength=3&maxLength=10`)
-      .then(res => res.text())
-      .then(words => setWords(words.split(`\n`)))
-      .then(nothing => {
-        setGameState('game');
-      });
-  }
-
+  // custom react hook
   function useAsyncState(initialValue) {
     const [value, setValue] = useState(initialValue);
     const setter = x =>
@@ -62,9 +17,32 @@ function App() {
     return [value, setter];
   }
 
+  // proxy is used to get around CORS error
+  const PROXY = "https://cors-anywhere.herokuapp.com/";
+  const API = "app.linkedin-reach.io/words";
+
+  // custom react hooks
   const [difficulty, setDifficulty] = useAsyncState('none');
   const [difficultyNum, setDifficultyNum] = useAsyncState(0);
 
+  // normal react hooks
+  const [correct, setCorrect] = useState([]);
+  const [incorrect, setIncorrect] = useState([]);
+  const [guess, setGuess] = useState('');
+  const [guessesLeft, setGuessesLeft] = useState(6);
+  const [gameState, setGameState] = useState('intro');
+  const [words, setWords] = useState([]);
+  const [word, setWord] = useState('');
+  const [alert, setAlert] = useState('');
+
+  // set new word whenever words array changes
+  useEffect(() => {
+    if (words.length > 0) {
+      setWord(words[Math.floor(Math.random()*words.length)]);
+    }
+  }, [words]);
+
+  // set difficulty and start new game
   async function handleClick (e) {
     const newDifficulty = await setDifficulty(e.target.value);
     let newDifficultyNum;
@@ -77,6 +55,23 @@ function App() {
     };
     await setDifficultyNum(newDifficultyNum);
     newGame(newDifficultyNum);
+  };
+
+  const reset = () => {
+    setDifficulty('none');
+    setDifficultyNum(0);
+    setWord(words[Math.floor(Math.random()*words.length)]);
+    setGuessesLeft(6);
+    setCorrect([]);
+    setIncorrect([]);
+    setGameState('intro');
+  }
+
+  const newGame = (newDifficultyNum) => {
+    fetch(PROXY+API+`?difficulty=${newDifficultyNum}&minLength=3&maxLength=10`)
+      .then(res => res.text())
+      .then(words => setWords(words.split(`\n`)))
+      .then(nothing => setGameState('game'));
   }
 
   return (
@@ -96,7 +91,9 @@ function App() {
         correct={correct}
         setCorrect={setIncorrect}
         guessesLeft={guessesLeft}
-        setGuessesLeft={setGuessesLeft} /> : null}
+        setGuessesLeft={setGuessesLeft}
+        alert={alert}
+        setAlert={setAlert} /> : null}
     </div>
   );
 }

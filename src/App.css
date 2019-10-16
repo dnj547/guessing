@@ -55,3 +55,9 @@ input[type=submit], button {
   font-size: 10em;
   font-family: 'Wire One', sans-serif;
 }
+.alert {
+  padding: 10px;
+  color: gainsboro;
+  font-size: 3em;
+  font-family: 'Wire One', sans-serif;
+}

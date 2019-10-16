@@ -1,6 +1,7 @@
 import React from 'react';
 import Blank from './Blank';
 import Ex from './Ex';
+import Alert from './Alert';
 
 function Game (props) {
   const blanks = props.word ? props.word.split("").map((letter, i) => {
@@ -17,12 +18,13 @@ function Game (props) {
 
   const validGuess = guess => {
     if (guess === "" || !guess.match(/[a-z]/i) || guess.split("").length !== 1) {
-      console.log("You must enter a letter")
+      props.setAlert("Enter a letter");
       return false
     } else if (props.incorrect.includes(guess) || props.correct.includes(guess)) {
-      console.log("You have already guessed that letter")
+      props.setAlert("You have already guessed that letter");
       return false
     } else {
+      props.setAlert('');
       return true
     }
   };
@@ -31,13 +33,11 @@ function Game (props) {
     e.preventDefault();
     if (validGuess(props.guess)) {
       if (props.word.split("").includes(props.guess)) {
-        console.log("correct", props.guess, props.word);
         props.setCorrect([...props.correct, props.guess]);
         if (props.word.split("").every(letter=>[...props.correct, props.guess].includes(letter))) {
           props.setGameState('won')
         }
       } else {
-        console.log("incorrect", props.guess, props.word);
         props.setIncorrect([...props.incorrect, props.guess]);
         if (props.guessesLeft === 1) {
           props.setGameState('lost')
@@ -50,6 +50,7 @@ function Game (props) {
   };
   return (
     <div>
+      <Alert alert={props.alert}/>
       {blanks}
       <div className="buttons">
         <form onSubmit={handleSubmitGuess}>
