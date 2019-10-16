@@ -27,12 +27,12 @@ function App() {
   const [introScreen, setIntroScreen] = useState(true);
   const [gameScreen, setGameScreen] = useState(false);
   const [words, setWords] = useState([]);
-  const [word, setWord] = useState('');
+  const [word, setWord] = useState([]);
 
   // set new word whenever words array changes
   useEffect(() => {
     if (words.length > 0) {
-      setWord(words[Math.floor(Math.random()*words.length)]);
+      setWord(words[Math.floor(Math.random()*words.length)].split(""));
     }
   }, [words]);
 
@@ -54,7 +54,7 @@ function App() {
   const resetApp = () => {
     setDifficulty('none');
     setDifficultyNum(0);
-    setWord(words[Math.floor(Math.random()*words.length)]);
+    setWord(words[Math.floor(Math.random()*words.length)].split(""));
     setGameScreen(false);
     setIntroScreen(true);
   }

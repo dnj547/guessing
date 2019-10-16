@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Blank from './Blank';
 import Ex from './Ex';
 import Alert from './Alert';
@@ -15,7 +15,7 @@ function Game (props) {
   const [won, setWon] = useState(false);
   const [lost, setLost] = useState(false);
 
-  const blanks = props.word ? props.word.split("").map((letter, i) => {
+  const blanks = props.word ? props.word.map((letter, i) => {
     return <Blank
       letter={letter}
       key={'blank' + i}
@@ -34,9 +34,9 @@ function Game (props) {
     if (newIncorrect && newIncorrect.length > 5) {
       setPlayingGame(false);
       setLost(true);
-      setGiven(props.word.split(""));
+      setGiven(props.word);
       setAlert("You lost!");
-    } else if (newCorrect && props.word.split("").every(letter=>[...newCorrect, ...given].includes(letter))) {
+    } else if (newCorrect && props.word.every(letter=>[...newCorrect, ...given].includes(letter))) {
       setPlayingGame(false);
       setWon(true);
       setAlert("You won!");
@@ -61,37 +61,35 @@ function Game (props) {
     let newCorrect;
     let newIncorrect;
     let newGuessesLeft;
-    if (validGuess(guess)) {
-      if (props.word.split("").includes(guess)) {
-        newCorrect = [...correct, guess]
-        setCorrect(newCorrect);
-      } else {
-        newIncorrect = [...incorrect, guess]
-        setIncorrect(newIncorrect);
-        newGuessesLeft = guessesLeft-1
-        setGuessesLeft(newGuessesLeft);
-      }
+    if (validGuess(guess) && props.word.includes(guess)) {
+      newCorrect = [...correct, guess]
+      setCorrect(newCorrect);
+      winOrLose(newIncorrect, newCorrect);
+    } else if (validGuess(guess) && !props.word.includes(guess)) {
+      newIncorrect = [...incorrect, guess]
+      setIncorrect(newIncorrect);
+      newGuessesLeft = guessesLeft-1
+      setGuessesLeft(newGuessesLeft);
+      winOrLose(newIncorrect, newCorrect);
     }
     setGuess('');
-    winOrLose(newIncorrect, newCorrect);
   };
 
   const hint = () => {
     if (hintsLeft > 0) {
-      let letters = props.word.split("");
       let filteredLetters;
       let randomLetter;
-      if (correct.length > 0) {
-        if (given.length > 0) {
-          filteredLetters = letters.filter(letter => !correct.includes(letter) && !given.includes(letter));
-        } else {
-          filteredLetters = letters.filter(letter => !correct.includes(letter));
-        }
+      if (correct.length > 0 && given.length > 0) {
+        filteredLetters = props.word.filter(l => !correct.includes(l)).filter(l => !given.includes(l));
         randomLetter = filteredLetters[Math.floor(Math.random()*filteredLetters.length)];
-      } else if (given.length > 0) {
-        filteredLetters = letters.filter(letter => !given.includes(letter));
+      } else if (correct.length > 0 && given.length === 0) {
+        filteredLetters = props.word.filter(letter => !correct.includes(letter));
+        randomLetter = filteredLetters[Math.floor(Math.random()*filteredLetters.length)];
+      } else if (given.length > 0 && correct.length === 0) {
+        filteredLetters = props.word.filter(letter => !given.includes(letter));
+        randomLetter = props.word[Math.floor(Math.random()*props.word.length)];
       } else {
-        randomLetter = letters[Math.floor(Math.random()*letters.length)];
+        randomLetter = props.word[Math.floor(Math.random()*props.word.length)];
       }
       setGiven([...given, randomLetter]);
       setHintsLeft(hintsLeft-1);
@@ -102,7 +100,7 @@ function Game (props) {
 
   const giveUp = () => {
     setAlert("You gave up!");
-    setGiven(props.word.split(""));
+    setGiven(props.word);
     setPlayingGame(false);
     setLost(true);
   }
