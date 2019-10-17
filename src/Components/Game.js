@@ -80,26 +80,14 @@ function Game (props) {
 
   const hint = () => {
     if (hintsLeft > 0) {
-      let filteredLetters;
-      let randomLetter;
-      if (correct.length > 0 && given.length > 0) {
-        filteredLetters = props.word.filter(l => !correct.includes(l)).filter(l => !given.includes(l));
-        randomLetter = filteredLetters[Math.floor(Math.random()*filteredLetters.length)];
-      } else if (correct.length > 0 && given.length === 0) {
-        filteredLetters = props.word.filter(letter => !correct.includes(letter));
-        randomLetter = filteredLetters[Math.floor(Math.random()*filteredLetters.length)];
-      } else if (given.length > 0 && correct.length === 0) {
-        filteredLetters = props.word.filter(letter => !given.includes(letter));
-        randomLetter = props.word[Math.floor(Math.random()*props.word.length)];
-      } else {
-        randomLetter = props.word[Math.floor(Math.random()*props.word.length)];
-      }
+      let filteredLetters = props.word.filter(l => !correct.includes(l)).filter(l => !given.includes(l));
+      let randomLetter = filteredLetters[Math.floor(Math.random()*filteredLetters.length)];
       setGiven([...given, randomLetter]);
       setHintsLeft(hintsLeft-1);
+      winOrLose(incorrect, correct);
     } else {
       setAlert("No hints left");
     };
-    winOrLose(incorrect, correct);
   }
 
   const giveUp = () => {
