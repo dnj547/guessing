@@ -32,12 +32,14 @@ function App() {
   // set new word whenever words array changes
   useEffect(() => {
     if (words.length > 0) {
+      console.log("setting word")
       setWord(words[Math.floor(Math.random()*words.length)].split(""));
     }
   }, [words]);
 
   // set difficulty and start new game
   async function handleClick (e) {
+    console.log("handling click")
     const newDifficulty = await setDifficulty(e.target.value);
     let newDifficultyNum;
     if (newDifficulty === 'easy') {
@@ -48,6 +50,7 @@ function App() {
       newDifficultyNum = [8, 9, 10][Math.floor(Math.random()*[8, 9, 10].length)]
     };
     await setDifficultyNum(newDifficultyNum);
+    console.log(newDifficulty, newDifficultyNum)
     newGame(newDifficultyNum);
   };
 
@@ -60,11 +63,13 @@ function App() {
   }
 
   const newGame = (newDifficultyNum) => {
+    console.log("starting new game")
     setIntroScreen(false);
     setGameScreen(true);
     fetch(PROXY+API+`?difficulty=${newDifficultyNum}&minLength=3&maxLength=10`)
       .then(res => res.text())
       .then(words => setWords(words.split(`\n`)))
+      .then(n => console.log("done fetching and setting words"))
   }
 
   return (

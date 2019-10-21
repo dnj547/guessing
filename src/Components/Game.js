@@ -30,13 +30,16 @@ function Game (props) {
     setGuess(e.target.value.toLowerCase());
   };
 
-  const winOrLose = (incorrect, correct) => {
-    if (incorrect && incorrect.length > 5) {
+  const winOrLose = (inc, cor, giv) => {
+    console.log("win or lose?")
+    if (inc && inc.length > 5) {
+      console.log("lose")
       setPlayingGame(false);
       setLost(true);
       setGiven(props.word);
       setAlert("You lost!");
-    } else if (correct && props.word.every(letter=>[...correct, ...given].includes(letter))) {
+    } else if (cor && props.word.every(letter=>[...cor, ...giv].includes(letter))) {
+      console.log("won")
       setPlayingGame(false);
       setWon(true);
       setAlert("You won!");
@@ -44,6 +47,7 @@ function Game (props) {
   }
 
   const validGuess = guess => {
+    console.log("validating guess")
     if (guess === "" || !guess.match(/[a-z]/i) || guess.split("").length !== 1) {
       setAlert("Enter a letter");
       return false;
@@ -60,6 +64,7 @@ function Game (props) {
   };
 
   const handleSubmitGuess = e => {
+    console.log("guess submitted")
     e.preventDefault();
     let newCorrect;
     let newIncorrect;
@@ -67,30 +72,38 @@ function Game (props) {
     if (validGuess(guess) && props.word.includes(guess)) {
       newCorrect = [...correct, guess]
       setCorrect(newCorrect);
-      winOrLose(newIncorrect, newCorrect);
+      winOrLose(newIncorrect, newCorrect, given);
+      console.log("correct", newCorrect);
+      console.log("incorrect", newIncorrect);
     } else if (validGuess(guess) && !props.word.includes(guess)) {
       newIncorrect = [...incorrect, guess]
       setIncorrect(newIncorrect);
       newGuessesLeft = guessesLeft-1
       setGuessesLeft(newGuessesLeft);
-      winOrLose(newIncorrect, newCorrect);
+      winOrLose(newIncorrect, newCorrect, given);
+      console.log("correct", newCorrect);
+      console.log("incorrect", newIncorrect);
     }
     setGuess('');
   };
 
   const hint = () => {
+    console.log("giving hint")
     if (hintsLeft > 0) {
       let filteredLetters = props.word.filter(l => !correct.includes(l)).filter(l => !given.includes(l));
       let randomLetter = filteredLetters[Math.floor(Math.random()*filteredLetters.length)];
-      setGiven([...given, randomLetter]);
+      let newGiven = [...given, randomLetter]
+      setGiven(newGiven);
       setHintsLeft(hintsLeft-1);
-      winOrLose(incorrect, correct);
+      winOrLose(incorrect, correct, newGiven);
+      console.log(incorrect, correct, newGiven)
     } else {
       setAlert("No hints left");
     };
   }
 
   const giveUp = () => {
+    console.log("giving up")
     setAlert("You gave up!");
     setGiven(props.word);
     setPlayingGame(false);
@@ -98,6 +111,7 @@ function Game (props) {
   }
 
   const resetGame = () => {
+    console.log("resetting game")
     setGuessesLeft(6);
     setCorrect([]);
     setIncorrect([]);
@@ -107,6 +121,8 @@ function Game (props) {
     setLost(false);
     props.resetApp();
   };
+
+  console.log(props.word)
 
   return (
     <div>
